@@ -1,6 +1,6 @@
 # Chick Kicks
 
-## Getting Started
+## How to Run the Project
 
 Clone the repository to your local machine:
 
