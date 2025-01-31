@@ -3,10 +3,10 @@ import '../../layouts/main_layout.dart';
 
 class HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> featuredProducts = [
-    {'image': 'images/shoe1.jpg', 'name': 'Shoe 1', 'price': 150.0},
-    {'image': 'images/shoe2.jpg', 'name': 'Shoe 2', 'price': 200.0},
-    {'image': 'images/shoe3.jpg', 'name': 'Shoe 3', 'price': 180.0},
-    {'image': 'images/shoe4.jpg', 'name': 'Shoe 4', 'price': 250.0},
+    {'image': 'images/shoe1.jpg', 'name': 'Nike Air Max 270', 'price': 150.0},
+    {'image': 'images/shoe2.jpg', 'name': 'Adidas Ultraboost 22', 'price': 200.0},
+    {'image': 'images/shoe3.jpg', 'name': 'Puma RS-X', 'price': 180.0},
+    {'image': 'images/shoe4.jpg', 'name': 'New Balance 574', 'price': 250.0},
   ];
 
   HomePage({Key? key}) : super(key: key);
