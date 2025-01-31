@@ -15,6 +15,13 @@ class CartPage extends StatelessWidget {
     return MainLayout(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Cart',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           // Cart Items List
           Expanded(
             child: ListView.builder(
@@ -64,10 +71,7 @@ class CartPage extends StatelessWidget {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Implement checkout logic here
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Proceeding to checkout...')),
-                    );
+                    _showCheckoutForm(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -96,5 +100,93 @@ class CartPage extends StatelessWidget {
       total += item['price'] * item['quantity'];
     }
     return total;
+  }
+
+  // Function to show the checkout form in a dialog
+  void _showCheckoutForm(BuildContext context) {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String name = '';
+    String address = '';
+    String email = '';
+    String mobile = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Checkout'),
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => name = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Address'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your address';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => address = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || !value.contains('@')) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => email = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Mobile Number'),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length < 10) {
+                        return 'Please enter a valid mobile number';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => mobile = value!,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Order is complete!')),
+                  );
+                }
+              },
+              child: Text('Checkout'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

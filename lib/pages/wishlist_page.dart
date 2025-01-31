@@ -15,6 +15,13 @@ class WishlistPage extends StatelessWidget {
     return MainLayout(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Wishlist',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           // Wishlist Items List
           Expanded(
             child: ListView.builder(
