@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../layouts/main_layout.dart';
+import 'category_page.dart';
 
 class HomePage extends StatelessWidget {
   final List<Map<String, dynamic>> featuredProducts = [
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                _buildCategories(isWideScreen),
+                _buildCategories(isWideScreen, context),
 
                 // Featured Products
                 Padding(
@@ -82,7 +83,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategories(bool isWideScreen) {
+  Widget _buildCategories(bool isWideScreen, BuildContext context) {
     final categories = [
       {'title': 'Men', 'icon': Icons.male},
       {'title': 'Women', 'icon': Icons.female},
@@ -96,22 +97,33 @@ class HomePage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: isWideScreen ? 40 : 30,
-                  backgroundColor: Colors.black,
-                  child: Icon(
-                    categories[index]['icon'] as IconData,
-                    color: Colors.white,
-                    size: isWideScreen ? 30 : 24,
-                  ),
+          return GestureDetector(
+            onTap: () {
+              // Navigate to CategoryPage when category is clicked
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CategoryPage(categoryName: categories[index]['title'] as String),
                 ),
-                SizedBox(height: 8),
-                Text(categories[index]['title'] as String),
-              ],
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: isWideScreen ? 40 : 30,
+                    backgroundColor: Colors.black,
+                    child: Icon(
+                      categories[index]['icon'] as IconData,
+                      color: Colors.white,
+                      size: isWideScreen ? 30 : 24,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(categories[index]['title'] as String),
+                ],
+              ),
             ),
           );
         },
