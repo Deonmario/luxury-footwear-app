@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../layouts/main_layout.dart'; // Import the MainLayout
+import '../../layouts/main_layout.dart';
 
 class HomePage extends StatelessWidget {
   final List<String> featuredImages = [
@@ -8,6 +8,7 @@ class HomePage extends StatelessWidget {
     'images/shoe3.jpg',
     'images/shoe4.jpg',
   ];
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../home_page.dart';
-import '../cart_page.dart';
+import '../pages/home_page.dart';
+import '../pages/wishlist_page.dart';
+import '../pages/cart_page.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget body;
@@ -18,6 +19,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   final List<Widget> _pages = [
     HomePage(),
+    WishlistPage(),
     CartPage(),
   ];
 
@@ -26,7 +28,7 @@ class _MainLayoutState extends State<MainLayout> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Chick Kicks Luxury Footwear',
+          'Chick Kicks',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -51,8 +53,8 @@ class _MainLayoutState extends State<MainLayout> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            icon: Icon(Icons.shopping_cart),
+            label: 'Wishlist',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
