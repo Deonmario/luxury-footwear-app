@@ -40,9 +40,23 @@ class CartPage extends StatelessWidget {
                     ),
                     title: Text(cartItem['name']),
                     subtitle: Text('\$${cartItem['price']} x ${cartItem['quantity']}'),
-                    trailing: Text(
-                      '\$${(cartItem['price'] * cartItem['quantity']).toStringAsFixed(2)}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '\$${(cartItem['price'] * cartItem['quantity']).toStringAsFixed(2)}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.red),
+                          onPressed: () {
+                            // Implement remove from cart logic here
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${cartItem['name']} removed from cart')),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );
