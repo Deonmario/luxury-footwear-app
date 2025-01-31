@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import '../../layouts/main_layout.dart';
 
 class HomePage extends StatelessWidget {
-  final List<String> featuredImages = [
-    'images/shoe1.jpg',
-    'images/shoe2.jpg',
-    'images/shoe3.jpg',
-    'images/shoe4.jpg',
+  final List<Map<String, dynamic>> featuredProducts = [
+    {'image': 'images/shoe1.jpg', 'name': 'Shoe 1', 'price': 150.0},
+    {'image': 'images/shoe2.jpg', 'name': 'Shoe 2', 'price': 200.0},
+    {'image': 'images/shoe3.jpg', 'name': 'Shoe 3', 'price': 180.0},
+    {'image': 'images/shoe4.jpg', 'name': 'Shoe 4', 'price': 250.0},
   ];
+
   HomePage({Key? key}) : super(key: key);
 
   @override
@@ -38,7 +39,7 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            _buildFeaturedProductsGrid(),
+            _buildFeaturedProductsGrid(context),
           ],
         ),
       ),
@@ -111,7 +112,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedProductsGrid() {
+  Widget _buildFeaturedProductsGrid(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
@@ -123,24 +124,98 @@ class HomePage extends StatelessWidget {
           mainAxisSpacing: 8.0,
           childAspectRatio: 0.75,
         ),
-        itemCount: featuredImages.length,
+        itemCount: featuredProducts.length,
         itemBuilder: (context, index) {
-          return Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                featuredImages[index],
-                fit: BoxFit.cover,
-                width: double.infinity,
+          return GestureDetector(
+            onTap: () {
+              _showProductDetailsDialog(context, featuredProducts[index]);
+            },
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  featuredProducts[index]['image'],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  void _showProductDetailsDialog(BuildContext context, Map<String, dynamic> product) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                product['image'],
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: 16),
+              Text(
+                product['name'],
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                '\$${product['price'].toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Added to cart')),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text('Add to Cart'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Added to wishlist')),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text('Wishlist'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
