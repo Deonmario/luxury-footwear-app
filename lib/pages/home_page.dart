@@ -14,34 +14,40 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Hero Section
-            _buildHeroSection(),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWideScreen = constraints.maxWidth > 600;
 
-            // Categories Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Categories',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            _buildCategories(),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Hero Section
+                _buildHeroSection(),
 
-            // Featured Products
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Featured Products',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+                // Categories Section
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Categories',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                _buildCategories(isWideScreen),
+
+                // Featured Products
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Featured Products',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                _buildFeaturedProductsGrid(context, isWideScreen),
+              ],
             ),
-            _buildFeaturedProductsGrid(context),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -76,7 +82,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategories() {
+  Widget _buildCategories(bool isWideScreen) {
     final categories = [
       {'title': 'Men', 'icon': Icons.male},
       {'title': 'Women', 'icon': Icons.female},
@@ -85,7 +91,7 @@ class HomePage extends StatelessWidget {
     ];
 
     return Container(
-      height: 100,
+      height: isWideScreen ? 150 : 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
@@ -95,11 +101,12 @@ class HomePage extends StatelessWidget {
             child: Column(
               children: [
                 CircleAvatar(
-                  radius: 30,
+                  radius: isWideScreen ? 40 : 30,
                   backgroundColor: Colors.black,
                   child: Icon(
                     categories[index]['icon'] as IconData,
                     color: Colors.white,
+                    size: isWideScreen ? 30 : 24,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -112,14 +119,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedProductsGrid(BuildContext context) {
+  Widget _buildFeaturedProductsGrid(BuildContext context, bool isWideScreen) {
+    final crossAxisCount = isWideScreen ? 4 : 2;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+          crossAxisCount: crossAxisCount,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
           childAspectRatio: 0.75,
