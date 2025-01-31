@@ -3,9 +3,9 @@ import '../../layouts/main_layout.dart';
 
 class CartPage extends StatelessWidget {
   final List<Map<String, dynamic>> cartItems = [
-    {'name': 'Shoe 1', 'price': 150.0, 'image': 'images/shoe1.jpg', 'quantity': 1},
-    {'name': 'Shoe 2', 'price': 200.0, 'image': 'images/shoe2.jpg', 'quantity': 2},
-    {'name': 'Shoe 3', 'price': 180.0, 'image': 'images/shoe3.jpg', 'quantity': 1},
+    {'name': 'Nike Air Max 270', 'price': 150.0, 'image': 'images/shoe1.jpg', 'quantity': 1},
+    {'name': 'Adidas Ultraboost 22', 'price': 200.0, 'image': 'images/shoe2.jpg', 'quantity': 2},
+    {'name': 'Puma RS-X', 'price': 180.0, 'image': 'images/shoe3.jpg', 'quantity': 1},
   ];
 
   CartPage({Key? key}) : super(key: key);
