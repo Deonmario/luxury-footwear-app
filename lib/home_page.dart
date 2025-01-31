@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
+import '../layouts/main_layout.dart'; // Import the MainLayout
 
 class HomePage extends StatelessWidget {
   final List<String> featuredImages = [
     'images/shoe1.jpg',
     'images/shoe2.jpg',
     'images/shoe3.jpg',
+    'images/shoe4.jpg',
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text(
-          'Chick Kicks Luxury Footwear',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
+    return MainLayout(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
