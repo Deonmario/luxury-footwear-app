@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../home_page.dart';
+import '../cart_page.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget body;
+  final List<Widget>? appBarActions;
 
-  const MainLayout({Key? key, required this.body}) : super(key: key);
+  const MainLayout({Key? key, required this.body, this.appBarActions})
+      : super(key: key);
 
   @override
   _MainLayoutState createState() => _MainLayoutState();
@@ -15,6 +18,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   final List<Widget> _pages = [
     HomePage(),
+    CartPage(),
   ];
 
   @override
@@ -27,6 +31,7 @@ class _MainLayoutState extends State<MainLayout> {
         ),
         backgroundColor: Colors.black,
         centerTitle: true,
+        actions: widget.appBarActions,
       ),
       body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
@@ -50,8 +55,8 @@ class _MainLayoutState extends State<MainLayout> {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.shopping_cart),
+            label: 'Cart',
           ),
         ],
         selectedItemColor: Colors.black,
