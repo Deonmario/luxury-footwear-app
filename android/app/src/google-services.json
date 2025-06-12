@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738661972604",
+    "project_id": "luxury-footwear-app",
+    "storage_bucket": "luxury-footwear-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738661972604:android:9a73931e571980a25567f9",
+        "android_client_info": {
+          "package_name": "com.example.luxury_footwear_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEYIj7lH_YWUfhAx40WXVlqXmV3Ad3m8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
