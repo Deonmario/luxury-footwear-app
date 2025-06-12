@@ -1,18 +1,40 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../../layouts/main_layout.dart';
 import '../../providers/cart_provider.dart';
 import 'category_page.dart';
 
-class HomePage extends StatelessWidget {
-  final List<Map<String, dynamic>> featuredProducts = [
-    {'image': 'images/shoe1.jpg', 'name': 'Nike Air Max 270', 'price': 150.0},
-    {'image': 'images/shoe2.jpg', 'name': 'Adidas Ultraboost 22', 'price': 200.0},
-    {'image': 'images/shoe3.jpg', 'name': 'Puma RS-X', 'price': 180.0},
-    {'image': 'images/shoe4.jpg', 'name': 'New Balance 574', 'price': 250.0},
-  ];
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-  HomePage({Key? key}) : super(key: key);
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<dynamic> featuredProducts = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFeaturedProducts();
+  }
+
+  Future<void> fetchFeaturedProducts() async {
+    final response = await http.get(Uri.parse('https://dummyjson.com/products/category/mens-shoes'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        featuredProducts = data['products'];
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to fetch products');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +48,16 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHeroSection(),
-
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Categories',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('Categories',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 _buildCategories(isWideScreen, context),
-
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Featured Products',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text('Featured Products',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 ),
                 _buildFeaturedProductsGrid(context, isWideScreen),
               ],
@@ -133,6 +149,10 @@ class HomePage extends StatelessWidget {
   Widget _buildFeaturedProductsGrid(BuildContext context, bool isWideScreen) {
     final crossAxisCount = isWideScreen ? 4 : 2;
 
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
@@ -146,9 +166,10 @@ class HomePage extends StatelessWidget {
         ),
         itemCount: featuredProducts.length,
         itemBuilder: (context, index) {
+          final product = featuredProducts[index];
           return GestureDetector(
             onTap: () {
-              _showProductDetailsDialog(context, featuredProducts[index]);
+              _showProductDetailsDialog(context, product);
             },
             child: Card(
               elevation: 4,
@@ -157,8 +178,8 @@ class HomePage extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  featuredProducts[index]['image'],
+                child: Image.network(
+                  product['thumbnail'],
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
@@ -181,19 +202,19 @@ class HomePage extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                product['image'],
+              Image.network(
+                product['thumbnail'],
                 height: 150,
                 fit: BoxFit.cover,
               ),
               SizedBox(height: 16),
               Text(
-                product['name'],
+                product['title'],
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
               Text(
-                '\$${product['price'].toStringAsFixed(2)}',
+                '\$${product['price'].toString()}',
                 style: TextStyle(fontSize: 16, color: Colors.grey[700]),
               ),
               SizedBox(height: 16),
@@ -204,14 +225,14 @@ class HomePage extends StatelessWidget {
                     onPressed: () {
                       context.read<CartProvider>().addItem(
                         CartItem(
-                          name: product['name'],
-                          price: product['price'],
-                          image: product['image'],
+                          name: product['title'],
+                          price: double.tryParse(product['price'].toString()) ?? 0,
+                          image: product['thumbnail'],
                         ),
                       );
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${product['name']} added to cart')),
+                        SnackBar(content: Text('${product['title']} added to cart')),
                       );
                     },
                     style: ElevatedButton.styleFrom(

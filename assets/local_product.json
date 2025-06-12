@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Nike Dunk Low",
+    "price": 140.0,
+    "image": "images/shoe5.jpg"
+  },
+  {
+    "name": "Adidas Yeezy Boost",
+    "price": 300.0,
+    "image": "images/shoe6.jpg"
+  },
+  {
+    "name": "Converse Chuck Taylor",
+    "price": 90.0,
+    "image": "images/shoe7.jpg"
+  }
+]

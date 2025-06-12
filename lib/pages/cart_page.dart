@@ -31,12 +31,19 @@ class CartPage extends StatelessWidget {
                         elevation: 4,
                         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         child: ListTile(
-                          leading: Image.asset(
-                            item.image,
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
+                          leading: item.image.startsWith('http')
+                              ? Image.network(
+                                  item.image,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  item.image,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
                           title: Text(item.name),
                           subtitle: Text('\$${item.price} x ${item.quantity}'),
                           trailing: Row(
@@ -69,8 +76,10 @@ class CartPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text('\$${cart.totalPrice.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text('Total:',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text('\$${cart.totalPrice.toStringAsFixed(2)}',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -92,6 +101,75 @@ class CartPage extends StatelessWidget {
   }
 
   void _showCheckoutForm(BuildContext context) {
-    // (Same as before – no need to change)
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String name = '';
+    String address = '';
+    String email = '';
+    String mobile = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Checkout'),
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Name'),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter your name' : null,
+                    onSaved: (value) => name = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Address'),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Please enter your address' : null,
+                    onSaved: (value) => address = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) => value == null || !value.contains('@')
+                        ? 'Please enter a valid email'
+                        : null,
+                    onSaved: (value) => email = value!,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Mobile Number'),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) => value == null || value.length < 10
+                        ? 'Please enter a valid mobile number'
+                        : null,
+                    onSaved: (value) => mobile = value!,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Order is complete!')),
+                  );
+                }
+              },
+              child: Text('Checkout'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
