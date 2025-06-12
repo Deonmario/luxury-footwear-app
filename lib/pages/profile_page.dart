@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import '../widgets/camera_access_widget.dart';
+import '../providers/theme_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -53,6 +55,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -73,13 +77,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text("📍 Your Location: $location"),
                   const SizedBox(height: 30),
 
-                  // Camera Access Section
+                  // Dark Mode Toggle
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("🌙 Dark Mode", style: TextStyle(fontSize: 16)),
+                      Switch(
+                        value: themeProvider.isDarkMode,
+                        onChanged: (value) {
+                          themeProvider.toggleTheme(value);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Camera Access
                   const Text("📷 Camera Access", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   const CameraAccessWidget(),
                   const SizedBox(height: 30),
 
-                  // Logout
+                  // Logout Button
                   Center(
                     child: ElevatedButton(
                       onPressed: () async {
