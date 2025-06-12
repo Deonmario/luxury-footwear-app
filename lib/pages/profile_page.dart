@@ -1,67 +1,99 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../pages/local_products_page.dart'; // ← create this if not done
+import 'package:geolocator/geolocator.dart';
+import '../widgets/camera_access_widget.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    User? user;
-    try {
-      user = FirebaseAuth.instance.currentUser;
-    } catch (_) {
-      user = null; // Firebase temporarily disabled
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  User? user;
+  String location = 'Fetching location...';
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        location = 'Location services are disabled.';
+      });
+      return;
     }
 
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      setState(() {
+        location = 'Location permission denied.';
+      });
+      return;
+    }
+
+    final pos = await Geolocator.getCurrentPosition();
+    setState(() {
+      location = 'Lat: ${pos.latitude}, Long: ${pos.longitude}';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
         backgroundColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Welcome,", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
+      body: user == null
+          ? const Center(child: Text('No user is logged in'))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Welcome,", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Text("Email: ${user?.email ?? 'N/A'}"),
+                  Text("User ID: ${user?.uid ?? 'N/A'}"),
+                  const SizedBox(height: 20),
+                  Text("📍 Your Location: $location"),
+                  const SizedBox(height: 30),
 
-            // Firebase fallback content
-            if (user != null) ...[
-              Text("Email: ${user.email}"),
-              Text("User ID: ${user.uid}"),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  if (context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/');
-                  }
-                },
-                child: Text('Logout'),
+                  // Camera Access Section
+                  const Text("📷 Camera Access", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const CameraAccessWidget(),
+                  const SizedBox(height: 30),
+
+                  // Logout
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        if (context.mounted) {
+                          Navigator.pushReplacementNamed(context, '/');
+                        }
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ),
+                ],
               ),
-            ] else ...[
-              Text("Firebase user data unavailable."),
-              SizedBox(height: 20),
-            ],
-
-            Divider(height: 40),
-            Text("Offline Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => LocalProductsPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-              child: Text('View Offline Products'),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

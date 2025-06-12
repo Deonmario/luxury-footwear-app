@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 import '../pages/wishlist_page.dart';
 import '../pages/cart_page.dart';
+import '../pages/profile_page.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget body;
@@ -21,6 +22,7 @@ class _MainLayoutState extends State<MainLayout> {
     HomePage(),
     WishlistPage(),
     CartPage(),
+    ProfilePage(),
   ];
 
   @override
@@ -59,6 +61,10 @@ class _MainLayoutState extends State<MainLayout> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Cart',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
         selectedItemColor: Colors.black,
