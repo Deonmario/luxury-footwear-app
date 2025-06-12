@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../layouts/main_layout.dart';
+import '../../providers/cart_provider.dart';
 import 'category_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -23,10 +25,8 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Hero Section
                 _buildHeroSection(),
 
-                // Categories Section
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -36,7 +36,6 @@ class HomePage extends StatelessWidget {
                 ),
                 _buildCategories(isWideScreen, context),
 
-                // Featured Products
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -99,11 +98,11 @@ class HomePage extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              // Navigate to CategoryPage when category is clicked
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CategoryPage(categoryName: categories[index]['title'] as String),
+                  builder: (context) =>
+                      CategoryPage(categoryName: categories[index]['title'] as String),
                 ),
               );
             },
@@ -203,9 +202,16 @@ class HomePage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      context.read<CartProvider>().addItem(
+                        CartItem(
+                          name: product['name'],
+                          price: product['price'],
+                          image: product['image'],
+                        ),
+                      );
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Added to cart')),
+                        SnackBar(content: Text('${product['name']} added to cart')),
                       );
                     },
                     style: ElevatedButton.styleFrom(
