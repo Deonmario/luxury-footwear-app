@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () async {
                         await FirebaseAuth.instance.signOut();
                         if (context.mounted) {
-                          Navigator.pushReplacementNamed(context, '/home');
+                          Navigator.pushReplacementNamed(context, '/');
                         }
                       },
                       style: ElevatedButton.styleFrom(
