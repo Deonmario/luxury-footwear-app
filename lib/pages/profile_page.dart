@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+
 import '../widgets/camera_access_widget.dart';
 import '../providers/theme_provider.dart';
 
@@ -13,13 +14,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  User? user;
+  User? user = FirebaseAuth.instance.currentUser;
   String location = 'Fetching location...';
 
   @override
   void initState() {
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
     _getLocation();
   }
 
@@ -59,8 +59,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/home');
+          },
+        ),
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: user == null
           ? const Center(child: Text('No user is logged in'))
@@ -69,7 +82,10 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Welcome,", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Welcome,",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 10),
                   Text("Email: ${user?.email ?? 'N/A'}"),
                   Text("User ID: ${user?.uid ?? 'N/A'}"),
@@ -104,10 +120,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () async {
                         await FirebaseAuth.instance.signOut();
                         if (context.mounted) {
-                          Navigator.pushReplacementNamed(context, '/');
+                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       },
-                      child: const Text('Logout'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Logout', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],
